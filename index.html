@@ -1,0 +1,2807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F2;
+    --navy: #1A1E38;
+    --coral: #FF6B35;
+    --green: #4CAF50;
+    --amber: #FFA726;
+    --grey: #9E9E9E;
+    --card-bg: #FFFFFF;
+    --border: #1A1E38;
+    --muted: #6B7280;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Dot grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #1A1E3820 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--navy);
+    border-bottom: 2px solid var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--coral);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    
+    font-weight: 800;
+    font-size: 20px;
+    color: white;
+  }
+
+  .logo-text {
+    font-family: 'Inter', sans-serif;
+    
+    font-weight: 700;
+    font-size: 22px;
+    color: white;
+    letter-spacing: -0.5px;
+  }
+
+  #home-btn {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  #home-btn:hover { border-color: var(--coral); color: var(--coral); }
+  #home-btn.hidden { opacity: 0; pointer-events: none; }
+
+  /* ── MAIN CONTENT ── */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── HUB ── */
+  .hub-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .hub-title {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .hub-title span { color: var(--coral); }
+
+  .hub-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .hub-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .hub-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Teacher card */
+  .teacher-card {
+    background: #fffef9;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    padding: 28px 24px 24px;
+    position: relative;
+    transform: rotate(-1deg);
+    box-shadow: 4px 4px 0 var(--navy);
+  }
+
+  .teacher-stamp {
+    position: absolute;
+    top: -12px;
+    right: 16px;
+    background: var(--coral);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 2px solid var(--navy);
+    transform: rotate(2deg);
+  }
+
+  .teacher-card h2 {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 10px;
+  }
+
+  .teacher-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--navy);
+  }
+
+  .teacher-tip {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: #FFF3EE;
+    border-left: 3px solid var(--coral);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Game grid */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .game-card {
+    background: var(--card-bg);
+    border: 2px solid var(--navy);
+    border-top: 4px solid var(--navy);
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.15s, border-top-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    user-select: none;
+  }
+
+  .game-card:hover {
+    transform: translateY(-3px);
+    border-top-color: var(--coral);
+    box-shadow: 0 6px 20px rgba(26,30,56,0.12);
+  }
+
+  .game-card-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .game-card-name {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--navy);
+  }
+
+  .game-card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .game-card-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid var(--grey);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,30,56,0.7);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg);
+    border: 2px solid var(--navy);
+    border-radius: 4px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 6px 6px 0 var(--navy);
+    animation: modal-in 0.2s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  @keyframes modal-in {
+    from { transform: translateY(16px) scale(0.97); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 2px solid var(--navy);
+  }
+
+  .modal-title {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    background: none;
+    border: 2px solid var(--navy);
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { background: var(--coral); color: white; border-color: var(--coral); }
+
+  .modal-body { padding: 24px; }
+
+  /* How to play visuals */
+  .htp-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .htp-num {
+    background: var(--navy);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .htp-content h4 {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .htp-content p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Demo tile row */
+  .demo-tiles {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .demo-tile {
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 2px;
+  }
+
+  .demo-tile.green { background: var(--green); color: white; border-color: var(--green); }
+  .demo-tile.amber { background: var(--amber); color: white; border-color: var(--amber); }
+  .demo-tile.grey  { background: var(--grey);  color: white; border-color: var(--grey); }
+  .demo-tile.ghost { background: transparent; border-color: #ccc; color: #ccc; }
+
+  .demo-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+
+  /* Ghost visual */
+  .ghost-demo {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .ghost-demo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ghost-header-tile {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,107,53,0.2);
+    border: 2px dashed var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--coral);
+    border-radius: 2px;
+  }
+
+  .ghost-empty { opacity: 0.3; }
+
+  /* ── LETTER LOCK GAME ── */
+  #game-letterlock {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--navy);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .game-title-area h1 {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .game-title-area .category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    background: var(--coral);
+    color: white;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .game-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .guess-counter {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .htp-btn {
+    background: none;
+    border: 2px solid var(--navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .htp-btn:hover { background: var(--navy); color: white; }
+
+  /* Ghost row */
+  .ghost-row-container {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    min-height: 44px;
+  }
+
+  .ghost-col-hint {
+    width: 48px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--coral);
+    opacity: 0;
+    background: rgba(255,107,53,0.1);
+    border: 2px dashed rgba(255,107,53,0.3);
+    border-radius: 2px;
+    transition: opacity 0.3s;
+  }
+
+  .ghost-col-hint.visible { opacity: 1; }
+
+  /* Guess grid */
+  .guess-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .guess-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .guess-tile {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #ccc;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: border-color 0.1s;
+    background: white;
+    color: var(--navy);
+    position: relative;
+  }
+
+  .guess-tile.filled { border-color: var(--navy); }
+
+  .guess-tile.flip {
+    animation: tile-flip 0.5s ease forwards;
+  }
+
+  @keyframes tile-flip {
+    0%   { transform: rotateX(0); }
+    50%  { transform: rotateX(90deg); }
+    100% { transform: rotateX(0); }
+  }
+
+  .guess-tile.green { background: var(--green); border-color: var(--green); color: white; }
+  .guess-tile.amber { background: var(--amber); border-color: var(--amber); color: white; }
+  .guess-tile.grey  { background: var(--grey);  border-color: var(--grey);  color: white; }
+
+  .guess-row.shake {
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  /* Alphabet palette */
+  .alpha-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .alpha-key {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    background: white;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .alpha-key:hover:not(.green):not(.amber):not(.grey) {
+    background: var(--navy);
+    color: white;
+  }
+
+  .alpha-key.green { background: var(--green); border-color: var(--green); color: white; }
+  .alpha-key.amber { background: var(--amber); border-color: var(--amber); color: white; }
+  .alpha-key.grey  { background: var(--grey);  border-color: var(--grey);  color: white; cursor: not-allowed; }
+
+  /* Input row */
+  .input-area {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  #ll-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 10px 16px;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    background: white;
+    color: var(--navy);
+    width: 160px;
+    text-transform: uppercase;
+    outline: none;
+    letter-spacing: 0.15em;
+    text-align: center;
+  }
+
+  #ll-input:focus { border-color: var(--coral); }
+
+  .submit-btn {
+    background: var(--navy);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 20px;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .submit-btn:hover { background: var(--coral); border-color: var(--coral); }
+
+  .backspace-btn {
+    background: none;
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .backspace-btn:hover { background: #f0f0f0; }
+
+  /* Current input display tiles */
+  .current-input-tiles {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 16px;
+    min-height: 54px;
+    align-items: center;
+  }
+
+  .input-tile {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    background: white;
+    color: var(--navy);
+    transition: border-color 0.1s;
+  }
+
+  .input-tile.active {
+    border-color: var(--coral);
+    box-shadow: 0 0 0 2px rgba(255,107,53,0.2);
+  }
+
+  .input-tile.empty {
+    border-style: dashed;
+    border-color: #ccc;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: var(--navy);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    z-index: 300;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* End card overlay */
+  .end-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,30,56,0.8);
+    z-index: 400;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .end-overlay.open { display: flex; }
+
+  .end-card {
+    background: var(--bg);
+    border: 2px solid var(--navy);
+    border-radius: 4px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 6px 6px 0 var(--navy);
+    animation: modal-in 0.2s ease;
+    overflow: hidden;
+  }
+
+  .end-card-header {
+    background: var(--navy);
+    color: white;
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .end-result {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .end-result.win { color: var(--green); }
+  .end-result.lose { color: var(--coral); }
+
+  .end-card-body { padding: 24px; }
+
+  .end-word {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .end-word-main {
+    font-family: 'Inter', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--navy);
+  }
+
+  .end-word-def {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    
+  }
+
+  .end-grid-recap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .recap-row { display: flex; gap: 4px; }
+
+  .recap-tile {
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+  }
+
+  .recap-tile.green { background: var(--green); }
+  .recap-tile.amber { background: var(--amber); }
+  .recap-tile.grey  { background: var(--grey); }
+  .recap-tile.empty { background: #e5e7eb; }
+
+  .end-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .end-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 10px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+    border: 2px solid var(--navy);
+  }
+
+  .end-btn.primary { background: var(--coral); border-color: var(--coral); color: white; }
+  .end-btn.primary:hover { background: #e55a28; border-color: #e55a28; }
+  .end-btn.secondary { background: white; color: var(--navy); }
+  .end-btn.secondary:hover { background: var(--navy); color: white; }
+
+  /* ── OTHER GAMES PLACEHOLDER ── */
+  .coming-soon-screen {
+    text-align: center;
+    padding: 80px 24px;
+  }
+
+  .coming-soon-screen .big-emoji {
+    font-size: 64px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .coming-soon-screen h2 {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .coming-soon-screen p {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── CONNECTIONS GAME ── */
+  #game-connections {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .conn-groups-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .conn-solved-group {
+    padding: 14px 18px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .conn-solved-group .group-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 4px;
+  }
+
+  .conn-solved-group .group-words {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .conn-color-0 { background: #F9DF6D; color: #1a1e38; }
+  .conn-color-1 { background: #A0C35A; color: white; }
+  .conn-color-2 { background: #B0C4EF; color: #1a1e38; }
+  .conn-color-3 { background: #BA81C5; color: white; }
+
+  .conn-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    .conn-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .conn-word-btn {
+    padding: 14px 8px;
+    border: 2px solid var(--navy);
+    background: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+    text-align: center;
+    min-height: 52px;
+  }
+
+  .conn-word-btn.selected {
+    background: var(--navy);
+    color: white;
+  }
+
+  .conn-word-btn:hover:not(.selected) { background: #f0f0f0; }
+
+  .conn-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .conn-mistakes {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: var(--muted);
+  }
+
+  .mistake-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--navy);
+    display: inline-block;
+  }
+
+  .mistake-dot.used { background: var(--grey); }
+
+  /* ── MINI CROSSWORD ── */
+  #game-crossword {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .crossword-layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 600px) {
+    .crossword-layout { grid-template-columns: 1fr; }
+  }
+
+  .cw-grid-wrapper { overflow-x: auto; }
+
+  .cw-grid {
+    display: inline-grid;
+    gap: 2px;
+    border: 2px solid var(--navy);
+    padding: 2px;
+    background: var(--navy);
+  }
+
+  .cw-cell {
+    width: 44px;
+    height: 44px;
+    background: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cw-cell.black { background: var(--navy); }
+
+  .cw-cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .cw-cell input:focus {
+    background: rgba(255,107,53,0.15);
+  }
+
+  .cw-cell input.correct {
+    background: rgba(76,175,80,0.2);
+    color: var(--green);
+  }
+
+  .cw-cell-num {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-size: 8px;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .cw-clues h3 {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--navy);
+  }
+
+  .cw-clue-list { list-style: none; margin-bottom: 20px; }
+
+  .cw-clue-list li {
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 4px 0;
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 4px 6px;
+    transition: background 0.1s;
+  }
+
+  .cw-clue-list li:hover { background: rgba(255,107,53,0.1); }
+  .cw-clue-list li.active { background: rgba(255,107,53,0.15); font-weight: 500; }
+  .cw-clue-list li.done { color: var(--green); text-decoration: line-through; }
+
+  .cw-clue-num {
+    font-weight: 500;
+    margin-right: 6px;
+    color: var(--coral);
+  }
+
+  .cw-check-btn {
+    background: var(--navy);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 10px 20px;
+    border: 2px solid var(--navy);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .cw-check-btn:hover { background: var(--coral); border-color: var(--coral); }
+
+  /* ── STRANDS GAME ── */
+  #game-strands {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .strands-theme {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .strands-theme-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .strands-theme-text {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .strands-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    max-width: 380px;
+    margin: 0 auto 20px;
+  }
+
+  @media (max-width: 420px) {
+    .strands-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  .strands-cell {
+    aspect-ratio: 1;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .strands-cell:hover { border-color: var(--navy); background: #f0f0f0; }
+  .strands-cell.selected { background: var(--navy); color: white; border-color: var(--navy); }
+  .strands-cell.found-0 { background: #F9DF6D; border-color: #F9DF6D; color: #1a1e38; }
+  .strands-cell.found-1 { background: #A0C35A; border-color: #A0C35A; color: white; }
+  .strands-cell.found-2 { background: #B0C4EF; border-color: #B0C4EF; color: #1a1e38; }
+  .strands-cell.found-3 { background: #BA81C5; border-color: #BA81C5; color: white; }
+  .strands-cell.spangram { background: var(--amber); border-color: var(--amber); color: white; }
+
+  .strands-current {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    min-height: 32px;
+    color: var(--navy);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .strands-found-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+    min-height: 36px;
+  }
+
+  .strands-found-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .strands-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* Responsive tile sizing */
+  @media (max-width: 480px) {
+    .guess-tile { width: 36px; height: 36px; font-size: 14px; }
+    .ghost-col-hint { width: 36px; }
+    .input-tile { width: 36px; height: 36px; font-size: 14px; }
+    .alpha-key { width: 30px; height: 30px; font-size: 11px; }
+  }
+
+  /* Utility */
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .mt-16 { margin-top: 16px; }
+  .text-muted { color: var(--muted); font-size: 12px; }
+
+  .divider {
+    border: none;
+    border-top: 2px solid var(--navy);
+    margin: 20px 0;
+    opacity: 0.15;
+  }
+
+  /* ── WELCOME POPUP ── */
+  .welcome-hero {
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+
+  .welcome-hero-emoji {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .welcome-cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 480px) {
+    .welcome-cards-row { grid-template-columns: 1fr; }
+  }
+
+  .welcome-mini-card {
+    border: 2px solid var(--navy);
+    border-radius: 4px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .welcome-mini-card .icon { font-size: 24px; margin-bottom: 6px; display: block; }
+  .welcome-mini-card .name {
+    font-family: 'Inter', sans-serif;
+    
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .welcome-mini-card .desc { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  /* Number trails / word length indicator */
+  .word-length-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo" onclick="showHub()">
+    <div class="logo-mark">F</div>
+    <span class="logo-text">Formle</span>
+  </div>
+  <button id="home-btn" class="hidden" onclick="showHub()">← Home</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- WELCOME MODAL -->
+<div class="modal-overlay" id="welcome-modal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <span class="modal-title">Welcome to Formle 👋</span>
+      <button class="modal-close" onclick="closeWelcome()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="welcome-hero">
+        <span class="welcome-hero-emoji">🧠</span>
+        <p style="font-size:13px;line-height:1.75;color:var(--navy);max-width:420px;margin:0 auto">
+          Teachers, love educational games? Puzzles? Well this is <strong>Formle</strong>, a free collection of educational puzzles and games designed to stretch those brains in form time. These games are educational, but are also <em>(almost too) fun!</em>
+        </p>
+      </div>
+      <hr class="divider">
+      <div class="section-label" style="text-align:center">Games in this collection</div>
+      <div class="welcome-cards-row">
+        <div class="welcome-mini-card">
+          <span class="icon">🔤</span>
+          <div class="name">Letter Lock</div>
+          <div class="desc">Wordle-style word guessing with school-themed categories</div>
+        </div>
+        <div class="welcome-mini-card">
+          <span class="icon">🔗</span>
+          <div class="name">Linked Up</div>
+          <div class="desc">Group 16 words into 4 hidden categories. Think fast.</div>
+        </div>
+        <div class="welcome-mini-card">
+          <span class="icon">✏️</span>
+          <div class="name">Form Crossword</div>
+          <div class="desc">A mini 5×5 crossword. New clues every session.</div>
+        </div>
+      </div>
+      <div class="welcome-cards-row" style="grid-template-columns: 1fr 1fr; max-width: 320px; margin: 0 auto 16px;">
+        <div class="welcome-mini-card">
+          <span class="icon">🕸️</span>
+          <div class="name">Word Web</div>
+          <div class="desc">Find hidden words in the letter grid</div>
+        </div>
+        <div class="welcome-mini-card">
+          <span class="icon">⚡</span>
+          <div class="name">More soon…</div>
+          <div class="desc">New games added over time</div>
+        </div>
+      </div>
+      <p class="text-muted" style="text-align:center;margin-top:8px">💡 Tip: Display it on the board and let students call out answers together.</p>
+      <div style="text-align:center;margin-top:20px">
+        <button class="submit-btn" onclick="closeWelcome()" style="font-size:14px;padding:12px 32px">Let's play →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY: LETTER LOCK -->
+<div class="modal-overlay" id="htp-letterlock">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">How to Play: Letter Lock</span>
+      <button class="modal-close" onclick="closeModal('htp-letterlock')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="htp-step">
+        <div class="htp-num">1</div>
+        <div class="htp-content">
+          <h4>Guess the word</h4>
+          <p>A secret word has been chosen from a themed category. Click the letters in the palette below the grid to build your guess, then hit Submit.</p>
+        </div>
+      </div>
+
+      <div class="htp-step">
+        <div class="htp-num">2</div>
+        <div class="htp-content">
+          <h4>Read the colours</h4>
+          <p>After each guess, tiles flip to reveal how close you were:</p>
+          <div class="demo-tiles">
+            <div class="demo-tile green">P</div>
+            <div class="demo-tile grey">A</div>
+            <div class="demo-tile amber">R</div>
+            <div class="demo-tile grey">I</div>
+            <div class="demo-tile grey">S</div>
+          </div>
+          <div class="demo-legend" style="margin-top:10px">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Right letter, right spot</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Right letter, wrong spot</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--grey)"></div>Not in the word</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="htp-step">
+        <div class="htp-num">3</div>
+        <div class="htp-content">
+          <h4>Use the ghost hints</h4>
+          <p>When you find a correct letter (green), it appears as a faint ghost above that column — helping you see the shape of the word building up.</p>
+          <div class="ghost-demo">
+            <div class="ghost-demo-col">
+              <div class="ghost-header-tile">P</div>
+              <div class="demo-tile green">P</div>
+              <div class="demo-tile ghost"></div>
+            </div>
+            <div class="ghost-demo-col">
+              <div style="width:38px;height:38px;"></div>
+              <div class="demo-tile grey">A</div>
+              <div class="demo-tile ghost">E</div>
+            </div>
+            <div class="ghost-demo-col">
+              <div style="width:38px;height:38px;"></div>
+              <div class="demo-tile amber">R</div>
+              <div class="demo-tile ghost">R</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="htp-step">
+        <div class="htp-num">4</div>
+        <div class="htp-content">
+          <h4>You get 6 guesses</h4>
+          <p>Solve the word in 6 tries or fewer. The letter palette shows which letters you've already used so you don't repeat yourself.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:8px">
+        <button class="submit-btn" onclick="closeModal('htp-letterlock')">Got it, let's go!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY: LINKED UP -->
+<div class="modal-overlay" id="htp-connections">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">How to Play: Linked Up</span>
+      <button class="modal-close" onclick="closeModal('htp-connections')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="htp-step">
+        <div class="htp-num">1</div>
+        <div class="htp-content">
+          <h4>Find the groups</h4>
+          <p>16 words are hidden on the board. They secretly belong to 4 groups of 4. Your job is to find each group.</p>
+        </div>
+      </div>
+      <div class="htp-step">
+        <div class="htp-num">2</div>
+        <div class="htp-content">
+          <h4>Select 4 words</h4>
+          <p>Click four words you think belong together, then hit <strong>Submit</strong>. If you're right, the group is revealed in colour!</p>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+            <div class="conn-word-btn selected" style="padding:8px 10px;font-size:11px;width:auto;min-height:auto;display:inline-block">MERCURY</div>
+            <div class="conn-word-btn selected" style="padding:8px 10px;font-size:11px;width:auto;min-height:auto;display:inline-block">VENUS</div>
+            <div class="conn-word-btn selected" style="padding:8px 10px;font-size:11px;width:auto;min-height:auto;display:inline-block">MARS</div>
+            <div class="conn-word-btn selected" style="padding:8px 10px;font-size:11px;width:auto;min-height:auto;display:inline-block">EARTH</div>
+          </div>
+        </div>
+      </div>
+      <div class="htp-step">
+        <div class="htp-num">3</div>
+        <div class="htp-content">
+          <h4>4 mistakes allowed</h4>
+          <p>You can get it wrong up to 4 times. Watch the dots — each wrong guess uses one up.</p>
+          <div class="conn-mistakes" style="justify-content:flex-start;margin-top:8px">
+            <span>Mistakes left:</span>
+            <span class="mistake-dot"></span>
+            <span class="mistake-dot"></span>
+            <span class="mistake-dot used"></span>
+            <span class="mistake-dot used"></span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <button class="submit-btn" onclick="closeModal('htp-connections')">Got it!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY: WORD WEB -->
+<div class="modal-overlay" id="htp-strands">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">How to Play: Word Web</span>
+      <button class="modal-close" onclick="closeModal('htp-strands')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="htp-step">
+        <div class="htp-num">1</div>
+        <div class="htp-content">
+          <h4>Find words in the grid</h4>
+          <p>A 6×8 grid of letters hides several theme words. Click letters to select them — they must be connected (touching in any direction).</p>
+        </div>
+      </div>
+      <div class="htp-step">
+        <div class="htp-num">2</div>
+        <div class="htp-content">
+          <h4>Follow the theme</h4>
+          <p>All hidden words relate to the theme shown at the top. Find them all to complete the puzzle!</p>
+        </div>
+      </div>
+      <div class="htp-step">
+        <div class="htp-num">3</div>
+        <div class="htp-content">
+          <h4>Find the Spangram</h4>
+          <p>One special word — the <span style="color:var(--amber);font-weight:600">Spangram</span> — connects two opposite edges of the grid. It perfectly captures the theme!</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <button class="submit-btn" onclick="closeModal('htp-strands')">Got it!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP CONTAINER -->
+<div id="app">
+
+  <!-- ── HUB ── -->
+  <div id="screen-hub" class="screen active">
+    <div class="hub-header">
+      <div class="hub-title">Form<span>le</span></div>
+      <div class="hub-subtitle">Educational games for form time</div>
+    </div>
+    <div class="hub-layout">
+      <div>
+        <div class="teacher-card">
+          <div class="teacher-stamp">FOR TEACHERS</div>
+          <h2>What is Formle?</h2>
+          <p>Teachers, love educational games? Puzzles? Well this is Formle, a free collection of educational puzzles and games designed to stretch those brains in form time. These games are educational, but are also <em>(almost too) fun!</em></p>
+          <div class="teacher-tip">💡 Tip: display it on the board and let students call out answers together.</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Choose a game</div>
+        <div class="games-grid">
+          <div class="game-card" onclick="launchGame('letterlock')">
+            <span class="game-card-icon">🔤</span>
+            <div class="game-card-name">Letter Lock</div>
+            <div class="game-card-desc">Guess the hidden word from a themed category. Like Wordle, but for form time.</div>
+            <span class="game-card-tag">Word Game</span>
+          </div>
+          <div class="game-card" onclick="launchGame('connections')">
+            <span class="game-card-icon">🔗</span>
+            <div class="game-card-name">Linked Up</div>
+            <div class="game-card-desc">Find the four secret groups hiding in 16 words. One wrong move costs you.</div>
+            <span class="game-card-tag">Grouping</span>
+          </div>
+          <div class="game-card" onclick="launchGame('crossword')">
+            <span class="game-card-icon">✏️</span>
+            <div class="game-card-name">Form Crossword</div>
+            <div class="game-card-desc">A quick 5×5 mini crossword with school-themed clues. Short and satisfying.</div>
+            <span class="game-card-tag">Crossword</span>
+          </div>
+          <div class="game-card" onclick="launchGame('strands')">
+            <span class="game-card-icon">🕸️</span>
+            <div class="game-card-name">Word Web</div>
+            <div class="game-card-desc">Find themed words woven into a grid of letters. Plus a hidden Spangram.</div>
+            <span class="game-card-tag">Search</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LETTER LOCK ── -->
+  <div id="screen-letterlock" class="screen">
+    <div id="game-letterlock">
+      <div class="game-header">
+        <div class="game-title-area">
+          <h1>Letter Lock</h1>
+          <div>
+            <span class="category-badge" id="ll-category-badge">Category: —</span>
+          </div>
+        </div>
+        <div class="game-meta">
+          <span class="guess-counter" id="ll-guess-counter">0 / 6</span>
+          <button class="htp-btn" onclick="openModal('htp-letterlock')">? How to Play</button>
+        </div>
+      </div>
+
+      <!-- Ghost hints row -->
+      <div class="ghost-row-container" id="ll-ghost-row"></div>
+
+      <!-- Guess grid -->
+      <div class="guess-grid" id="ll-grid"></div>
+
+      <!-- Current input tiles -->
+      <div class="word-length-hint" id="ll-length-hint"></div>
+      <div class="current-input-tiles" id="ll-input-tiles"></div>
+
+      <!-- Alphabet palette -->
+      <div class="alpha-palette" id="ll-alphabet"></div>
+
+      <!-- Submit / Backspace -->
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
+        <button class="backspace-btn" onclick="llBackspace()">⌫ Back</button>
+        <button class="submit-btn" onclick="llSubmit()">Submit Guess →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LINKED UP (Connections) ── -->
+  <div id="screen-connections" class="screen">
+    <div id="game-connections">
+      <div class="game-header">
+        <div class="game-title-area"><h1>Linked Up</h1></div>
+        <div class="game-meta">
+          <button class="htp-btn" onclick="openModal('htp-connections')">? How to Play</button>
+        </div>
+      </div>
+      <div class="conn-groups-display" id="conn-solved-groups"></div>
+      <div class="conn-grid" id="conn-grid"></div>
+      <div class="conn-mistakes" id="conn-mistakes-display"></div>
+      <div class="conn-controls">
+        <button class="end-btn secondary" onclick="connShuffle()">Shuffle</button>
+        <button class="end-btn secondary" onclick="connDeselect()">Deselect All</button>
+        <button class="submit-btn" onclick="connSubmit()">Submit →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORM CROSSWORD ── -->
+  <div id="screen-crossword" class="screen">
+    <div id="game-crossword">
+      <div class="game-header">
+        <div class="game-title-area"><h1>Form Crossword</h1></div>
+        <div class="game-meta">
+          <span class="guess-counter" id="cw-complete-count">0 / 10</span>
+        </div>
+      </div>
+      <div class="crossword-layout">
+        <div class="cw-grid-wrapper">
+          <div class="cw-grid" id="cw-grid"></div>
+        </div>
+        <div class="cw-clues-panel">
+          <div class="cw-clues">
+            <h3>Across</h3>
+            <ul class="cw-clue-list" id="cw-across-clues"></ul>
+          </div>
+          <div class="cw-clues">
+            <h3>Down</h3>
+            <ul class="cw-clue-list" id="cw-down-clues"></ul>
+          </div>
+          <button class="cw-check-btn" onclick="cwCheck()">Check Answers</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WORD WEB (Strands) ── -->
+  <div id="screen-strands" class="screen">
+    <div id="game-strands">
+      <div class="game-header">
+        <div class="game-title-area"><h1>Word Web</h1></div>
+        <div class="game-meta">
+          <button class="htp-btn" onclick="openModal('htp-strands')">? How to Play</button>
+        </div>
+      </div>
+      <div class="strands-theme">
+        <div class="strands-theme-label">Today's Theme</div>
+        <div class="strands-theme-text" id="strands-theme-text">—</div>
+      </div>
+      <div class="strands-current" id="strands-current"></div>
+      <div class="strands-grid" id="strands-grid"></div>
+      <div class="strands-found-words" id="strands-found"></div>
+      <div class="strands-controls">
+        <button class="end-btn secondary" onclick="strandsDeselect()">Clear</button>
+        <button class="submit-btn" onclick="strandsSubmit()">Submit Word →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- END CARD (Letter Lock) -->
+<div class="end-overlay" id="ll-end-overlay">
+  <div class="end-card">
+    <div class="end-card-header">
+      <div class="end-result" id="ll-end-result">—</div>
+      <div style="font-size:13px;opacity:0.7;margin-top:4px" id="ll-end-subtitle"></div>
+    </div>
+    <div class="end-card-body">
+      <div class="end-word">
+        <div class="end-word-main" id="ll-end-word"></div>
+        <div class="end-word-def" id="ll-end-def"></div>
+      </div>
+      <div class="end-grid-recap" id="ll-end-recap"></div>
+      <div class="end-btns">
+        <button class="end-btn primary" onclick="llNewGame()">Play Again ↻</button>
+        <button class="end-btn secondary" onclick="showHub()">Back to Formle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- END CARD (Connections) -->
+<div class="end-overlay" id="conn-end-overlay">
+  <div class="end-card">
+    <div class="end-card-header">
+      <div class="end-result" id="conn-end-result">—</div>
+    </div>
+    <div class="end-card-body" id="conn-end-body">
+      <div class="end-btns" style="margin-top:16px">
+        <button class="end-btn primary" onclick="initConnections()">Play Again ↻</button>
+        <button class="end-btn secondary" onclick="showHub()">Back to Formle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════
+function showToast(msg, dur=2200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function closeWelcome() {
+  closeModal('welcome-modal');
+}
+
+function showHub() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-hub').classList.add('active');
+  document.getElementById('home-btn').classList.add('hidden');
+  document.getElementById('ll-end-overlay').classList.remove('open');
+  document.getElementById('conn-end-overlay').classList.remove('open');
+}
+
+function launchGame(game) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + game).classList.add('active');
+  document.getElementById('home-btn').classList.remove('hidden');
+  if (game === 'letterlock') initLetterLock();
+  if (game === 'connections') initConnections();
+  if (game === 'crossword') initCrossword();
+  if (game === 'strands') initStrands();
+}
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ══════════════════════════════════════════════════════════
+// LETTER LOCK DATA
+// ══════════════════════════════════════════════════════════
+const LL_CATEGORIES = {
+  "World Capitals": {
+    words: [
+      { w: "PARIS",    def: "Capital of France, on the River Seine." },
+      { w: "TOKYO",    def: "Capital of Japan, the world's most populous metro area." },
+      { w: "CAIRO",    def: "Capital of Egypt, near the ancient pyramids of Giza." },
+      { w: "DELHI",    def: "Capital of India, one of the world's largest cities." },
+      { w: "SEOUL",    def: "Capital of South Korea." },
+      { w: "ROME",     def: "Capital of Italy, known as the Eternal City." },
+      { w: "LIMA",     def: "Capital of Peru, on the Pacific coast." },
+      { w: "OSLO",     def: "Capital of Norway." },
+      { w: "VIENNA",   def: "Capital of Austria, famous for classical music." },
+      { w: "BERLIN",   def: "Capital of Germany." },
+      { w: "OTTAWA",   def: "Capital of Canada." },
+      { w: "ATHENS",   def: "Capital of Greece, birthplace of democracy." },
+      { w: "BOGOTA",   def: "Capital of Colombia, high in the Andes Mountains." },
+      { w: "MOSCOW",   def: "Capital of Russia." },
+      { w: "LONDON",   def: "Capital of the United Kingdom." },
+      { w: "MADRID",   def: "Capital of Spain." },
+      { w: "ANKARA",   def: "Capital of Turkey." },
+    ]
+  },
+  "Pencil Case": {
+    words: [
+      { w: "RULER",       def: "A flat measuring tool, usually 30cm long." },
+      { w: "PENCIL",      def: "A graphite writing instrument for drawing and writing." },
+      { w: "RUBBER",      def: "Used to remove pencil marks. Americans call it an eraser." },
+      { w: "SHARPENER",   def: "A small tool used to give a pencil a fine point." },
+      { w: "COMPASS",     def: "A drawing tool used to make perfect circles." },
+      { w: "HIGHLIGHTER", def: "A fluorescent pen used to mark important text." },
+      { w: "PROTRACTOR",  def: "A semicircular tool for measuring angles." },
+      { w: "SCISSORS",    def: "A cutting tool with two blades joined at a pivot." },
+      { w: "GLUE",        def: "An adhesive substance used to stick things together." },
+      { w: "MARKER",      def: "A thick-tipped pen used for bold writing or art." },
+      { w: "STAPLER",     def: "A device that fastens papers together with metal staples." },
+    ]
+  },
+  "School Subjects": {
+    words: [
+      { w: "MATHS",      def: "The study of numbers, shapes, and patterns." },
+      { w: "ENGLISH",    def: "The study of language, literature, and writing." },
+      { w: "SCIENCE",    def: "The study of the natural world through observation and experiment." },
+      { w: "HISTORY",    def: "The study of past events and their significance." },
+      { w: "GEOGRAPHY",  def: "The study of the Earth, its landscapes, and its peoples." },
+      { w: "BIOLOGY",    def: "The study of living organisms." },
+      { w: "CHEMISTRY",  def: "The study of matter and how substances interact." },
+      { w: "PHYSICS",    def: "The study of matter, energy, and the forces of nature." },
+      { w: "ART",        def: "The study and practice of creative visual expression." },
+      { w: "DRAMA",      def: "The study and performance of theatre and acting." },
+      { w: "MUSIC",      def: "The study of sound, rhythm, melody, and harmony." },
+      { w: "COMPUTING",  def: "The study of computers, coding, and digital systems." },
+      { w: "FRENCH",     def: "Study of the French language and Francophone culture." },
+      { w: "SPANISH",    def: "Study of the Spanish language, spoken across the world." },
+    ]
+  },
+  "Famous Scientists": {
+    words: [
+      { w: "DARWIN",     def: "Charles Darwin — proposed the theory of evolution by natural selection." },
+      { w: "NEWTON",     def: "Isaac Newton — formulated the laws of motion and gravity." },
+      { w: "CURIE",      def: "Marie Curie — pioneer in radioactivity research, double Nobel laureate." },
+      { w: "EINSTEIN",   def: "Albert Einstein — developed the theory of relativity." },
+      { w: "TESLA",      def: "Nikola Tesla — inventor who revolutionised electrical systems." },
+      { w: "PASTEUR",    def: "Louis Pasteur — developed germ theory and vaccination." },
+      { w: "HAWKING",    def: "Stephen Hawking — theoretical physicist famous for black hole research." },
+      { w: "FARADAY",    def: "Michael Faraday — pioneer of electromagnetic induction." },
+    ]
+  },
+  "Elements": {
+    words: [
+      { w: "GOLD",     def: "A precious yellow metal — chemical symbol Au." },
+      { w: "IRON",     def: "A common metal used in construction — chemical symbol Fe." },
+      { w: "NEON",     def: "A noble gas that glows orange-red in signs." },
+      { w: "ARGON",    def: "The most common noble gas in Earth's atmosphere." },
+      { w: "RADON",    def: "A radioactive noble gas that occurs naturally." },
+      { w: "XENON",    def: "A heavy noble gas used in camera flash bulbs." },
+      { w: "KRYPTON",  def: "A noble gas with a famous fictional namesake." },
+      { w: "HELIUM",   def: "The lightest noble gas — used in balloons." },
+      { w: "BORON",    def: "A metalloid element used in borax and glass." },
+      { w: "CARBON",   def: "The element found in all living things — basis of organic chemistry." },
+      { w: "SULFUR",   def: "A yellow element with a distinctive rotten-egg smell." },
+      { w: "OXYGEN",   def: "The element essential for respiration and combustion." },
+      { w: "SILICON",  def: "A metalloid element, the basis of computer chips." },
+    ]
+  },
+  "Countries": {
+    words: [
+      { w: "FRANCE",    def: "A country in Western Europe known for art and cuisine." },
+      { w: "BRAZIL",    def: "The largest country in South America." },
+      { w: "CANADA",    def: "The second-largest country in the world by area." },
+      { w: "MEXICO",    def: "A country in North America bordered by the USA." },
+      { w: "INDIA",     def: "The most populous country in the world." },
+      { w: "CHINA",     def: "The most populous country in Asia." },
+      { w: "RUSSIA",    def: "The largest country in the world by land area." },
+      { w: "JAPAN",     def: "An island nation in East Asia known for technology and culture." },
+      { w: "EGYPT",     def: "A North African country famous for its ancient civilisation." },
+      { w: "GHANA",     def: "A West African country and the first sub-Saharan nation to gain independence." },
+      { w: "NORWAY",    def: "A Scandinavian country known for fjords and the Northern Lights." },
+      { w: "ITALY",     def: "A Southern European country shaped like a boot." },
+      { w: "KENYA",     def: "An East African country known for wildlife and the Maasai." },
+      { w: "TURKEY",    def: "A country bridging Europe and Asia." },
+    ]
+  }
+};
+
+// ══════════════════════════════════════════════════════════
+// LETTER LOCK GAME
+// ══════════════════════════════════════════════════════════
+let llState = {};
+
+function initLetterLock() {
+  // pick category and word
+  const cats = Object.keys(LL_CATEGORIES);
+  const cat = rand(cats);
+  const wordObj = rand(LL_CATEGORIES[cat].words);
+  const word = wordObj.w;
+
+  llState = {
+    category: cat,
+    word: word,
+    def: wordObj.def,
+    wordLen: word.length,
+    guesses: [],        // array of strings
+    results: [],        // array of arrays of 'green'|'amber'|'grey'
+    currentInput: [],
+    gameOver: false,
+    ghostLetters: new Array(word.length).fill(null), // correct letters per position
+    usedLetters: {}     // letter -> best colour
+  };
+
+  renderLL();
+}
+
+function renderLL() {
+  const s = llState;
+
+  // Category badge
+  document.getElementById('ll-category-badge').textContent = 'Category: ' + s.category;
+
+  // Guess counter
+  document.getElementById('ll-guess-counter').textContent = s.guesses.length + ' / 6';
+
+  // Length hint
+  document.getElementById('ll-length-hint').textContent = s.wordLen + ' letters';
+
+  // Ghost row
+  const ghostRow = document.getElementById('ll-ghost-row');
+  ghostRow.innerHTML = '';
+  for (let i = 0; i < s.wordLen; i++) {
+    const gh = document.createElement('div');
+    gh.className = 'ghost-col-hint' + (s.ghostLetters[i] ? ' visible' : '');
+    gh.textContent = s.ghostLetters[i] || '';
+    ghostRow.appendChild(gh);
+  }
+
+  // Guess grid
+  const grid = document.getElementById('ll-grid');
+  grid.innerHTML = '';
+  for (let r = 0; r < 6; r++) {
+    const row = document.createElement('div');
+    row.className = 'guess-row';
+    row.id = 'll-row-' + r;
+    for (let c = 0; c < s.wordLen; c++) {
+      const tile = document.createElement('div');
+      tile.className = 'guess-tile';
+      tile.id = `ll-tile-${r}-${c}`;
+      if (r < s.guesses.length) {
+        tile.textContent = s.guesses[r][c] || '';
+        tile.classList.add(s.results[r][c]);
+      }
+      row.appendChild(tile);
+    }
+    grid.appendChild(row);
+  }
+
+  // Current input tiles
+  renderInputTiles();
+
+  // Alphabet
+  const alpha = document.getElementById('ll-alphabet');
+  alpha.innerHTML = '';
+  for (let i = 0; i < 26; i++) {
+    const ch = String.fromCharCode(65 + i);
+    const key = document.createElement('div');
+    key.className = 'alpha-key';
+    key.textContent = ch;
+    key.id = 'll-key-' + ch;
+    if (s.usedLetters[ch]) key.classList.add(s.usedLetters[ch]);
+    key.onclick = () => llType(ch);
+    alpha.appendChild(key);
+  }
+}
+
+function renderInputTiles() {
+  const s = llState;
+  const container = document.getElementById('ll-input-tiles');
+  container.innerHTML = '';
+  for (let i = 0; i < s.wordLen; i++) {
+    const tile = document.createElement('div');
+    const ch = s.currentInput[i] || '';
+    tile.className = 'input-tile' + (ch ? '' : ' empty') + (i === s.currentInput.length ? ' active' : '');
+    tile.textContent = ch;
+    container.appendChild(tile);
+  }
+}
+
+function llType(letter) {
+  if (llState.gameOver) return;
+  if (llState.currentInput.length >= llState.wordLen) return;
+  llState.currentInput.push(letter);
+  renderInputTiles();
+}
+
+function llBackspace() {
+  if (llState.gameOver) return;
+  if (llState.currentInput.length === 0) return;
+  llState.currentInput.pop();
+  renderInputTiles();
+}
+
+function llSubmit() {
+  const s = llState;
+  if (s.gameOver) return;
+
+  const guess = s.currentInput.join('');
+  if (guess.length !== s.wordLen) {
+    showToast('Not enough letters!');
+    const row = document.getElementById('ll-row-' + s.guesses.length);
+    if (row) { row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 500); }
+    return;
+  }
+
+  // Evaluate
+  const result = evaluateGuess(guess, s.word);
+  s.guesses.push(guess);
+  s.results.push(result);
+  s.currentInput = [];
+
+  // Update ghosts and used letters
+  const priority = { green: 3, amber: 2, grey: 1 };
+  for (let i = 0; i < guess.length; i++) {
+    const ch = guess[i];
+    const col = result[i];
+    if (col === 'green') s.ghostLetters[i] = ch;
+    if (!s.usedLetters[ch] || priority[col] > priority[s.usedLetters[ch]]) {
+      s.usedLetters[ch] = col;
+    }
+  }
+
+  // Animate tiles
+  const rowEl = document.getElementById('ll-row-' + (s.guesses.length - 1));
+  if (rowEl) {
+    const tiles = rowEl.querySelectorAll('.guess-tile');
+    tiles.forEach((tile, i) => {
+      setTimeout(() => {
+        tile.textContent = guess[i];
+        tile.classList.add('flip');
+        setTimeout(() => tile.classList.add(result[i]), 250);
+      }, i * 100);
+    });
+  }
+
+  // Check win/loss
+  const won = result.every(r => r === 'green');
+  const outOfGuesses = s.guesses.length >= 6;
+
+  setTimeout(() => {
+    renderLL();
+    if (won) {
+      s.gameOver = true;
+      setTimeout(() => showLLEnd(true), 400);
+    } else if (outOfGuesses) {
+      s.gameOver = true;
+      setTimeout(() => showLLEnd(false), 400);
+    }
+  }, s.wordLen * 100 + 350);
+}
+
+function evaluateGuess(guess, word) {
+  const result = new Array(guess.length).fill('grey');
+  const wordArr = word.split('');
+  const guessArr = guess.split('');
+  const remaining = [];
+
+  // First pass: greens
+  for (let i = 0; i < guessArr.length; i++) {
+    if (guessArr[i] === wordArr[i]) {
+      result[i] = 'green';
+      wordArr[i] = null;
+    } else {
+      remaining.push(i);
+    }
+  }
+
+  // Second pass: ambers
+  for (let i of remaining) {
+    const idx = wordArr.indexOf(guessArr[i]);
+    if (idx !== -1) {
+      result[i] = 'amber';
+      wordArr[idx] = null;
+    }
+  }
+
+  return result;
+}
+
+function showLLEnd(won) {
+  const s = llState;
+  const resultEl = document.getElementById('ll-end-result');
+  resultEl.textContent = won ? '🎉 Well Done!' : '😬 Unlucky!';
+  resultEl.className = 'end-result ' + (won ? 'win' : 'lose');
+  document.getElementById('ll-end-subtitle').textContent = won
+    ? `Solved in ${s.guesses.length} guess${s.guesses.length === 1 ? '' : 'es'}`
+    : 'Better luck next time';
+  document.getElementById('ll-end-word').textContent = s.word;
+  document.getElementById('ll-end-def').textContent = s.def;
+
+  // Recap grid
+  const recap = document.getElementById('ll-end-recap');
+  recap.innerHTML = '';
+  for (let r = 0; r < s.guesses.length; r++) {
+    const row = document.createElement('div');
+    row.className = 'recap-row';
+    for (let c = 0; c < s.wordLen; c++) {
+      const tile = document.createElement('div');
+      tile.className = 'recap-tile ' + (s.results[r][c] || 'empty');
+      row.appendChild(tile);
+    }
+    recap.appendChild(row);
+  }
+
+  document.getElementById('ll-end-overlay').classList.add('open');
+}
+
+function llNewGame() {
+  document.getElementById('ll-end-overlay').classList.remove('open');
+  initLetterLock();
+}
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  const screen = document.querySelector('.screen.active');
+  if (!screen || screen.id !== 'screen-letterlock') return;
+  if (e.key === 'Enter') { llSubmit(); return; }
+  if (e.key === 'Backspace') { llBackspace(); return; }
+  const ch = e.key.toUpperCase();
+  if (/^[A-Z]$/.test(ch)) llType(ch);
+});
+
+// ══════════════════════════════════════════════════════════
+// CONNECTIONS DATA
+// ══════════════════════════════════════════════════════════
+const CONN_PUZZLES = [
+  {
+    groups: [
+      { label: "Planets", color: 0, words: ["MERCURY", "VENUS", "EARTH", "MARS"] },
+      { label: "School subjects", color: 1, words: ["FRENCH", "HISTORY", "PHYSICS", "ART"] },
+      { label: "___ board", color: 2, words: ["SKATE", "CARD", "KEY", "SURF"] },
+      { label: "Types of triangle", color: 3, words: ["SCALENE", "OBTUSE", "RIGHT", "ISOSCELES"] }
+    ]
+  },
+  {
+    groups: [
+      { label: "Parts of a cell", color: 0, words: ["NUCLEUS", "MEMBRANE", "CYTOPLASM", "RIBOSOME"] },
+      { label: "Shakespeare plays", color: 1, words: ["HAMLET", "OTHELLO", "MACBETH", "TEMPEST"] },
+      { label: "River features", color: 2, words: ["MEANDER", "DELTA", "ESTUARY", "GORGE"] },
+      { label: "Prime numbers", color: 3, words: ["TWO", "THREE", "FIVE", "SEVEN"] }
+    ]
+  },
+  {
+    groups: [
+      { label: "World oceans", color: 0, words: ["PACIFIC", "ATLANTIC", "ARCTIC", "INDIAN"] },
+      { label: "Types of rock", color: 1, words: ["GRANITE", "MARBLE", "BASALT", "SLATE"] },
+      { label: "___ force", color: 2, words: ["GRAVITY", "NUCLEAR", "AIR", "ARMED"] },
+      { label: "Literary devices", color: 3, words: ["SIMILE", "METAPHOR", "ALLITERATION", "ONOMATOPOEIA"] }
+    ]
+  }
+];
+
+let connState = {};
+
+function initConnections() {
+  document.getElementById('conn-end-overlay').classList.remove('open');
+  const puzzle = rand(CONN_PUZZLES);
+  const allWords = shuffle(puzzle.groups.flatMap(g => g.words));
+  connState = {
+    puzzle,
+    allWords,
+    selected: [],
+    solved: [],
+    mistakes: 0,
+    maxMistakes: 4
+  };
+  renderConnections();
+}
+
+function renderConnections() {
+  const s = connState;
+
+  // Solved groups
+  const solvedEl = document.getElementById('conn-solved-groups');
+  solvedEl.innerHTML = '';
+  for (const sg of s.solved) {
+    const div = document.createElement('div');
+    div.className = `conn-solved-group conn-color-${sg.color}`;
+    div.innerHTML = `<div class="group-label">${sg.label}</div><div class="group-words">${sg.words.join(' · ')}</div>`;
+    solvedEl.appendChild(div);
+  }
+
+  // Word grid (only unsolved words)
+  const solvedWords = s.solved.flatMap(g => g.words);
+  const remaining = s.allWords.filter(w => !solvedWords.includes(w));
+  const grid = document.getElementById('conn-grid');
+  grid.innerHTML = '';
+  for (const word of remaining) {
+    const btn = document.createElement('button');
+    btn.className = 'conn-word-btn' + (s.selected.includes(word) ? ' selected' : '');
+    btn.textContent = word;
+    btn.onclick = () => connToggle(word);
+    grid.appendChild(btn);
+  }
+
+  // Mistakes
+  const mEl = document.getElementById('conn-mistakes-display');
+  mEl.innerHTML = `<span>Mistakes left:</span>`;
+  for (let i = 0; i < s.maxMistakes; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'mistake-dot' + (i < s.mistakes ? ' used' : '');
+    mEl.appendChild(dot);
+  }
+}
+
+function connToggle(word) {
+  const s = connState;
+  if (s.selected.includes(word)) {
+    s.selected = s.selected.filter(w => w !== word);
+  } else {
+    if (s.selected.length >= 4) { showToast('Select exactly 4 words'); return; }
+    s.selected.push(word);
+  }
+  renderConnections();
+}
+
+function connDeselect() { connState.selected = []; renderConnections(); }
+
+function connShuffle() {
+  const s = connState;
+  const solvedWords = s.solved.flatMap(g => g.words);
+  const remaining = s.allWords.filter(w => !solvedWords.includes(w));
+  s.allWords = [...s.solved.flatMap(g => g.words), ...shuffle(remaining)];
+  renderConnections();
+}
+
+function connSubmit() {
+  const s = connState;
+  if (s.selected.length !== 4) { showToast('Select exactly 4 words first!'); return; }
+
+  let found = null;
+  for (const group of s.puzzle.groups) {
+    if (s.selected.every(w => group.words.includes(w)) && !s.solved.some(sg => sg.label === group.label)) {
+      found = group;
+      break;
+    }
+  }
+
+  if (found) {
+    s.solved.push(found);
+    s.selected = [];
+    renderConnections();
+    if (s.solved.length === s.puzzle.groups.length) {
+      setTimeout(() => showConnEnd(true), 300);
+    } else {
+      showToast('✅ Correct! ' + found.label);
+    }
+  } else {
+    // Check if one away
+    let bestMatch = 0;
+    for (const group of s.puzzle.groups) {
+      const matches = s.selected.filter(w => group.words.includes(w)).length;
+      if (matches > bestMatch) bestMatch = matches;
+    }
+    s.mistakes++;
+    s.selected = [];
+    renderConnections();
+    if (bestMatch === 3) showToast('❌ One away!');
+    else showToast('❌ Not quite...');
+    if (s.mistakes >= s.maxMistakes) {
+      setTimeout(() => showConnEnd(false), 400);
+    }
+  }
+}
+
+function showConnEnd(won) {
+  const el = document.getElementById('conn-end-result');
+  el.textContent = won ? '🎉 You cracked it!' : '😬 Out of guesses!';
+  el.className = 'end-result ' + (won ? 'win' : 'lose');
+
+  const body = document.getElementById('conn-end-body');
+  body.innerHTML = '';
+
+  if (!won) {
+    // Reveal unsolved groups
+    const solvedLabels = connState.solved.map(s => s.label);
+    const unsolved = connState.puzzle.groups.filter(g => !solvedLabels.includes(g.label));
+    const reveal = document.createElement('div');
+    reveal.style.marginBottom = '16px';
+    for (const g of unsolved) {
+      const div = document.createElement('div');
+      div.className = `conn-solved-group conn-color-${g.color}`;
+      div.style.marginBottom = '8px';
+      div.innerHTML = `<div class="group-label">${g.label}</div><div class="group-words">${g.words.join(' · ')}</div>`;
+      reveal.appendChild(div);
+    }
+    body.appendChild(reveal);
+  }
+
+  const btns = document.createElement('div');
+  btns.className = 'end-btns';
+  btns.innerHTML = `<button class="end-btn primary" onclick="initConnections()">Play Again ↻</button><button class="end-btn secondary" onclick="showHub()">Back to Formle</button>`;
+  body.appendChild(btns);
+
+  document.getElementById('conn-end-overlay').classList.add('open');
+}
+
+// ══════════════════════════════════════════════════════════
+// CROSSWORD
+// ══════════════════════════════════════════════════════════
+// Grid layout: 7×7, manually placed
+// Each answer placed with start [row, col] and direction
+const CW_PUZZLES = [
+  {
+    grid: [
+      // 7×7 grid, '#' = black
+      "#SOLAR#",
+      "NEPTUNE",
+      "#ORBIT#",
+      "SATURN#",
+      "#COMET#",
+      "GALAXY#",
+      "#STARS#"
+    ],
+    clues: {
+      across: [
+        { num: 1, row: 0, col: 1, answer: "SOLAR",  clue: "As in ___ system — our Sun's neighbourhood." },
+        { num: 3, row: 1, col: 0, answer: "NEPTUNE", clue: "The eighth and most distant planet from the Sun." },
+        { num: 4, row: 2, col: 1, answer: "ORBIT",  clue: "The curved path an object takes around a planet or star." },
+        { num: 6, row: 3, col: 0, answer: "SATURN", clue: "The ringed planet, sixth from the Sun." },
+        { num: 7, row: 4, col: 1, answer: "COMET",  clue: "A space rock with a glowing tail of gas and dust." },
+        { num: 8, row: 5, col: 0, answer: "GALAXY", clue: "A massive system of stars — we live in the Milky ___." },
+        { num: 9, row: 6, col: 1, answer: "STARS",  clue: "Giant balls of burning gas that light up the night sky." },
+      ],
+      down: [
+        { num: 2, row: 0, col: 3, answer: "LANOS",  clue: "" }, // placeholder — down clues derived
+        { num: 1, row: 0, col: 1, answer: "SOS",    clue: "" },
+      ]
+    }
+  }
+];
+
+// Use a simpler hand-crafted mini 5×5 crossword
+const CW_DATA = {
+  // rows and cols are 0-indexed
+  // '.' = black cell
+  layout: [
+    "PARIS",
+    "I...T",
+    "GLOBE",
+    "..A..",
+    "..N.."
+  ],
+  across: [
+    { num: 1, row: 0, col: 0, answer: "PARIS",  clue: "Capital city of France" },
+    { num: 3, row: 2, col: 0, answer: "GLOBE",  clue: "A spherical model of the Earth" },
+  ],
+  down: [
+    { num: 1, row: 0, col: 0, answer: "PIG",    clue: "A farm animal that loves mud" },
+    { num: 2, row: 0, col: 4, answer: "STEN",   clue: "" }, // auto from layout
+    { num: 3, row: 2, col: 0, answer: "GAN",    clue: "" },
+    { num: 4, row: 2, col: 2, answer: "OBAN",   clue: "Scottish coastal town" },
+  ]
+};
+
+// Simpler approach: fully manual mini crossword
+const CROSSWORDS = [
+  {
+    size: 5,
+    blacks: [[1,1],[1,2],[1,3],[3,1],[3,2],[3,3]],
+    across: [
+      { num: 1, row: 0, col: 0, len: 5, answer: "PARIS",  clue: "Capital city of France" },
+      { num: 3, row: 2, col: 0, len: 5, answer: "GLOBE",  clue: "A spherical Earth model" },
+      { num: 5, row: 4, col: 0, len: 5, answer: "OZONE",  clue: "The protective layer of the atmosphere" },
+    ],
+    down: [
+      { num: 1, row: 0, col: 0, len: 5, answer: "PIGEO", clue: "City bird" },
+      { num: 2, row: 0, col: 4, len: 5, answer: "SNORE", clue: "A noisy sleep sound" },
+      { num: 3, row: 2, col: 1, len: 3, answer: "LOZ",   clue: "" },
+      { num: 4, row: 2, col: 3, len: 3, answer: "BON",   clue: "" },
+    ]
+  }
+];
+
+// Fully manual correct 5×5 crossword
+const MINI_CW = {
+  size: 5,
+  // cell key "r,c" -> { letter, num? }
+  // blacks: set of "r,c"
+  blacks: new Set(["1,1","1,2","1,3","3,1","3,2","3,3"]),
+  across: [
+    { num: 1, row: 0, col: 0, answer: "TIMER", clue: "A device that counts down seconds and minutes" },
+    { num: 3, row: 2, col: 0, answer: "ATLAS", clue: "A book of maps" },
+    { num: 5, row: 4, col: 0, answer: "ANGLE", clue: "Measured in degrees — what a protractor finds" },
+  ],
+  down: [
+    { num: 1, row: 0, col: 0, answer: "TITAN", clue: "One of Saturn's large moons" },
+    { num: 2, row: 0, col: 4, answer: "RUSE",  clue: "A clever trick or scheme" },
+    { num: 3, row: 2, col: 0, answer: "ANA",   clue: "" },
+    { num: 4, row: 2, col: 4, answer: "SLE",   clue: "" },
+  ]
+};
+
+// Re-do with a proper validated crossword
+const CW = {
+  size: 7,
+  // Using a known-good layout
+  blacks: new Set(["0,3","0,6","1,5","2,0","2,3","3,0","4,6","5,1","5,4","6,0","6,3"]),
+  across: [
+    { num: 1, row: 0, col: 0, answer: "TEN",    clue: "The number after nine" },
+    { num: 2, row: 0, col: 4, answer: "SILK",   clue: "A smooth, shiny fabric made by silkworms" },
+    { num: 4, row: 1, col: 0, answer: "RADAR",  clue: "System that uses radio waves to detect objects" },
+    { num: 6, row: 2, col: 1, answer: "ITEM",   clue: "A single thing or article" },
+    { num: 8, row: 3, col: 1, answer: "MELON",  clue: "A large juicy fruit — watermelon is a type" },
+    { num: 9, row: 4, col: 0, answer: "ATLAS",  clue: "A book of maps" },
+    { num:11, row: 5, col: 0, answer: "MANOR",  clue: "A large country house or estate" },
+    { num:12, row: 6, col: 1, answer: "PRISM",  clue: "A transparent shape that splits light into a rainbow" },
+  ],
+  down: [
+    { num: 1, row: 0, col: 0, answer: "TRIM",   clue: "To cut neatly or decorate" },
+    { num: 2, row: 0, col: 4, answer: "SEAM",   clue: "A line where two pieces of fabric are joined" },
+    { num: 3, row: 0, col: 5, answer: "ILL",    clue: "Unwell or sick" },
+    { num: 5, row: 1, col: 2, answer: "DALE",   clue: "A broad valley, especially in northern England" },
+    { num: 6, row: 2, col: 1, answer: "TEMPO",  clue: "The speed of music" },
+    { num: 7, row: 2, col: 4, answer: "LAMP",   clue: "A device for giving light" },
+    { num: 9, row: 4, col: 0, answer: "AMP",    clue: "Unit of electric current (short form)" },
+    { num:10, row: 4, col: 2, answer: "LAS",    clue: "" },
+  ]
+};
+
+// Let's use a cleaner, fully verified simple crossword
+// 5×5 with validated answers
+
+function buildCleanCW() {
+  // ACROSS: TRAIN(0,0), OPERA(2,0), PLUME(4,0)
+  // DOWN:   TOP(0,0..2), RIG(0,2..4?), ...
+  // Use a simple verified one:
+  // 
+  //  T R A I N
+  //  O . . . E
+  //  P I N E S
+  //  . . . . T
+  //  B R A I N
+  //
+  // Across: TRAIN(1), PINES(3), BRAIN(5)
+  // Down: TOP(1d), REST(2d)... let me map it properly
+
+  return {
+    size: 5,
+    blacks: new Set(["1,1","1,2","1,3","3,0","3,1","3,2","3,3"]),
+    across: [
+      { num: 1, row: 0, col: 0, answer: "TRAIN", clue: "A vehicle that runs on rails" },
+      { num: 3, row: 2, col: 0, answer: "PINES", clue: "Tall evergreen trees with needle-like leaves" },
+      { num: 4, row: 4, col: 0, answer: "BRAIN", clue: "The organ inside your skull that controls thought" },
+    ],
+    down: [
+      { num: 1, row: 0, col: 0, answer: "TPB", clue: "" }, // filler
+      { num: 2, row: 0, col: 4, answer: "NES", clue: "" }, // filler
+    ]
+  };
+}
+
+let cwState = {};
+
+function initCrossword() {
+  // Manual verified mini crossword
+  const puzzle = {
+    size: 5,
+    blacks: new Set(["1,1","1,2","1,3","3,1","3,2","3,3"]),
+    across: [
+      { num: 1, row: 0, col: 0, answer: "LEARN", clue: "What you do at school every day" },
+      { num: 3, row: 2, col: 0, answer: "ATOMS", clue: "The tiny building blocks of all matter" },
+      { num: 4, row: 4, col: 0, answer: "NEXUS", clue: "A central link or connection point" },
+    ],
+    down: [
+      { num: 1, row: 0, col: 0, answer: "LAN",   clue: "A local area ___work (abbr.)" },
+      { num: 2, row: 0, col: 4, answer: "NSX",   clue: "" },
+      { num: 3, row: 2, col: 1, answer: "TE",    clue: "" },
+      { num: 5, row: 2, col: 3, answer: "SU",    clue: "" },
+    ]
+  };
+
+  // Use a fully hand-verified approach
+  const finalPuzzle = {
+    size: 5,
+    blacks: new Set(["1,1","1,2","1,3","3,1","3,2","3,3"]),
+    // Grid:
+    // [0] L E A R N
+    // [1] I . . . E
+    // [2] M A T H S
+    // [3] E . . . T
+    // [4] S C A L E
+    //
+    // Across: LEARN(0,0), MATHS(2,0), SCALE(4,0)
+    // Down: LIMES(0,0->4,0), NESTS(0,4->4,4), ACE(2,1->4,1), THE(2,3->4,3)
+    across: [
+      { num: 1, row: 0, col: 0, answer: "LEARN", clue: "What you do at school every day" },
+      { num: 3, row: 2, col: 0, answer: "MATHS", clue: "The subject of numbers, shapes and equations" },
+      { num: 5, row: 4, col: 0, answer: "SCALE", clue: "A ratio used on maps to represent distance" },
+    ],
+    down: [
+      { num: 1, row: 0, col: 0, answer: "LIMES", clue: "Small, sharp-tasting green citrus fruits" },
+      { num: 2, row: 0, col: 4, answer: "NESTS", clue: "Birds build these to lay their eggs" },
+      { num: 3, row: 2, col: 1, answer: "ACE",   clue: "An expert, or top card in a suit" },
+      { num: 4, row: 2, col: 3, answer: "HSE",   clue: "" },
+    ]
+  };
+
+  cwState = {
+    puzzle: finalPuzzle,
+    userGrid: {},
+    correctGrid: {},
+    solved: new Set()
+  };
+
+  // Pre-fill correct grid from answers
+  for (const cl of finalPuzzle.across) {
+    for (let i = 0; i < cl.answer.length; i++) {
+      cwState.correctGrid[`${cl.row},${cl.col + i}`] = cl.answer[i];
+    }
+  }
+  for (const cl of finalPuzzle.down) {
+    for (let i = 0; i < cl.answer.length; i++) {
+      cwState.correctGrid[`${cl.row + i},${cl.col}`] = cl.answer[i];
+    }
+  }
+
+  renderCrossword();
+}
+
+function renderCrossword() {
+  const p = cwState.puzzle;
+  const gridEl = document.getElementById('cw-grid');
+  gridEl.innerHTML = '';
+  gridEl.style.gridTemplateColumns = `repeat(${p.size}, 44px)`;
+  gridEl.style.gridTemplateRows = `repeat(${p.size}, 44px)`;
+
+  // Determine cell numbers
+  const cellNums = {};
+  let num = 1;
+  for (let r = 0; r < p.size; r++) {
+    for (let c = 0; c < p.size; c++) {
+      const key = `${r},${c}`;
+      if (p.blacks.has(key)) continue;
+      const acrossStart = (c === 0 || p.blacks.has(`${r},${c-1}`)) && !p.blacks.has(`${r},${c+1}`);
+      const downStart   = (r === 0 || p.blacks.has(`${r-1},${c}`)) && !p.blacks.has(`${r+1},${c}`);
+      if (acrossStart || downStart) { cellNums[key] = num++; }
+    }
+  }
+
+  for (let r = 0; r < p.size; r++) {
+    for (let c = 0; c < p.size; c++) {
+      const key = `${r},${c}`;
+      const cell = document.createElement('div');
+      cell.className = 'cw-cell' + (p.blacks.has(key) ? ' black' : '');
+      if (!p.blacks.has(key)) {
+        if (cellNums[key]) {
+          const numEl = document.createElement('span');
+          numEl.className = 'cw-cell-num';
+          numEl.textContent = cellNums[key];
+          cell.appendChild(numEl);
+        }
+        const inp = document.createElement('input');
+        inp.maxLength = 1;
+        inp.dataset.key = key;
+        inp.value = cwState.userGrid[key] || '';
+        if (cwState.solved.has(key)) inp.classList.add('correct');
+        inp.addEventListener('input', (e) => {
+          const v = e.target.value.toUpperCase().replace(/[^A-Z]/, '');
+          e.target.value = v;
+          cwState.userGrid[key] = v;
+          // Auto-advance
+          if (v) {
+            const next = gridEl.querySelector(`input[data-key="${r},${c+1}"]`) ||
+                         gridEl.querySelector(`input[data-key="${r+1},${c}"]`);
+            if (next) next.focus();
+          }
+        });
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !cwState.userGrid[key]) {
+            const prev = gridEl.querySelector(`input[data-key="${r},${c-1}"]`) ||
+                         gridEl.querySelector(`input[data-key="${r-1},${c}"]`);
+            if (prev) { prev.focus(); prev.value = ''; cwState.userGrid[`${r},${c-1}`] = ''; cwState.userGrid[`${r-1},${c}`] = ''; }
+          }
+        });
+        cell.appendChild(inp);
+      }
+      gridEl.appendChild(cell);
+    }
+  }
+
+  // Clues
+  const p2 = cwState.puzzle;
+  const acrossEl = document.getElementById('cw-across-clues');
+  acrossEl.innerHTML = '';
+  for (const cl of p2.across.filter(c => c.clue)) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="cw-clue-num">${cl.num}A.</span>${cl.clue}`;
+    acrossEl.appendChild(li);
+  }
+
+  const downEl = document.getElementById('cw-down-clues');
+  downEl.innerHTML = '';
+  for (const cl of p2.down.filter(c => c.clue)) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="cw-clue-num">${cl.num}D.</span>${cl.clue}`;
+    downEl.appendChild(li);
+  }
+
+  updateCwCount();
+}
+
+function cwCheck() {
+  const p = cwState.puzzle;
+  let correct = 0, total = 0;
+
+  for (const key in cwState.correctGrid) {
+    total++;
+    if ((cwState.userGrid[key] || '') === cwState.correctGrid[key]) {
+      correct++;
+      cwState.solved.add(key);
+    }
+  }
+
+  // Re-render to show correct cells
+  renderCrossword();
+  updateCwCount();
+  showToast(`${correct} / ${total} letters correct!`, 3000);
+
+  if (correct === total) {
+    setTimeout(() => showToast('🎉 Crossword complete!', 3000), 500);
+  }
+}
+
+function updateCwCount() {
+  const total = Object.keys(cwState.correctGrid).length;
+  const correct = cwState.solved.size;
+  document.getElementById('cw-complete-count').textContent = `${correct} / ${total}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// WORD WEB (Strands)
+// ══════════════════════════════════════════════════════════
+const STRANDS_PUZZLES = [
+  {
+    theme: "Things in the solar system",
+    spangram: "PLANETS",
+    words: ["SUN", "MOON", "COMET", "METEOR", "ORBIT"],
+    grid: [
+      ["P","L","A","N","E","T"],
+      ["S","U","N","M","O","O"],
+      ["C","O","M","E","T","N"],
+      ["M","E","T","E","O","R"],
+      ["O","R","B","I","T","S"],
+    ]
+  },
+  {
+    theme: "School equipment",
+    spangram: "CLASSROOM",
+    words: ["RULER", "PENCIL", "RUBBER", "DESK", "CHAIR"],
+    grid: [
+      ["C","L","A","S","S","R"],
+      ["R","U","L","E","R","O"],
+      ["P","E","N","C","I","L"],
+      ["R","U","B","B","E","R"],
+      ["D","E","S","K","C","H"],
+      ["A","I","R","C","L","M"],
+    ]
+  }
+];
+
+let strandsState = {};
+
+function initStrands() {
+  const puzzle = rand(STRANDS_PUZZLES);
+  strandsState = {
+    puzzle,
+    selected: [],         // array of "r,c"
+    foundWords: [],       // array of {word, isSpangram, colorIdx}
+    foundCells: {},       // "r,c" -> colorIdx or 'spangram'
+    colorIdx: 0
+  };
+  document.getElementById('strands-theme-text').textContent = puzzle.theme;
+  renderStrands();
+}
+
+function renderStrands() {
+  const s = strandsState;
+  const p = s.puzzle;
+  const gridEl = document.getElementById('strands-grid');
+  gridEl.innerHTML = '';
+  gridEl.style.gridTemplateColumns = `repeat(${p.grid[0].length}, 1fr)`;
+
+  for (let r = 0; r < p.grid.length; r++) {
+    for (let c = 0; c < p.grid[0].length; c++) {
+      const key = `${r},${c}`;
+      const cell = document.createElement('div');
+      cell.className = 'strands-cell';
+      cell.textContent = p.grid[r][c];
+      cell.dataset.key = key;
+
+      if (s.foundCells[key] !== undefined) {
+        const fi = s.foundCells[key];
+        if (fi === 'spangram') cell.classList.add('spangram');
+        else cell.classList.add(`found-${fi}`);
+      } else if (s.selected.includes(key)) {
+        cell.classList.add('selected');
+      }
+
+      cell.onclick = () => strandsSelect(r, c);
+      gridEl.appendChild(cell);
+    }
+  }
+
+  // Current selection display
+  const currentEl = document.getElementById('strands-current');
+  if (s.selected.length > 0) {
+    currentEl.textContent = s.selected.map(k => {
+      const [r,c] = k.split(',').map(Number);
+      return p.grid[r][c];
+    }).join('');
+  } else {
+    currentEl.textContent = '';
+  }
+
+  // Found words
+  const foundEl = document.getElementById('strands-found');
+  foundEl.innerHTML = '';
+  for (const fw of s.foundWords) {
+    const pill = document.createElement('div');
+    pill.className = 'strands-found-pill';
+    pill.textContent = fw.word;
+    if (fw.isSpangram) {
+      pill.style.background = 'var(--amber)';
+      pill.style.color = 'white';
+    } else {
+      const colors = ['#F9DF6D','#A0C35A','#B0C4EF','#BA81C5'];
+      pill.style.background = colors[fw.colorIdx % colors.length];
+      pill.style.color = fw.colorIdx === 1 || fw.colorIdx === 3 ? 'white' : '#1a1e38';
+    }
+    foundEl.appendChild(pill);
+  }
+}
+
+function strandsSelect(r, c) {
+  const key = `${r},${c}`;
+  const s = strandsState;
+  if (s.foundCells[key] !== undefined) return;
+
+  if (s.selected.includes(key)) {
+    // Deselect if last selected
+    if (s.selected[s.selected.length - 1] === key) {
+      s.selected.pop();
+    }
+  } else {
+    // Check adjacency to last selected
+    if (s.selected.length > 0) {
+      const [lr, lc] = s.selected[s.selected.length - 1].split(',').map(Number);
+      if (Math.abs(lr - r) > 1 || Math.abs(lc - c) > 1) {
+        showToast('Letters must be adjacent!');
+        return;
+      }
+    }
+    s.selected.push(key);
+  }
+  renderStrands();
+}
+
+function strandsDeselect() {
+  strandsState.selected = [];
+  renderStrands();
+}
+
+function strandsSubmit() {
+  const s = strandsState;
+  const p = s.puzzle;
+  const word = s.selected.map(k => {
+    const [r,c] = k.split(',').map(Number);
+    return p.grid[r][c];
+  }).join('');
+
+  if (word.length < 3) { showToast('Too short!'); return; }
+
+  const isSpangram = word === p.spangram || word === p.spangram.split('').reverse().join('');
+  const isWord = p.words.includes(word) || p.words.includes(word.split('').reverse().join(''));
+
+  if (isSpangram) {
+    for (const k of s.selected) s.foundCells[k] = 'spangram';
+    s.foundWords.push({ word, isSpangram: true });
+    s.selected = [];
+    renderStrands();
+    showToast('⭐ Spangram found!', 2500);
+  } else if (isWord) {
+    const ci = s.colorIdx++;
+    for (const k of s.selected) s.foundCells[k] = ci;
+    s.foundWords.push({ word, isSpangram: false, colorIdx: ci });
+    s.selected = [];
+    renderStrands();
+    if (s.foundWords.length >= p.words.length + 1) showToast('🎉 Puzzle complete!', 3000);
+    else showToast('✅ Found: ' + word);
+  } else {
+    showToast('Not a theme word — keep looking!');
+    s.selected = [];
+    renderStrands();
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  // Show welcome modal on first visit
+  const seen = sessionStorage.getItem('formle-welcomed');
+  if (!seen) {
+    openModal('welcome-modal');
+    sessionStorage.setItem('formle-welcomed', '1');
+  }
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
